@@ -53,6 +53,7 @@ function setAuthMode(signUp) {
   $("auth-switch-text").textContent = signUp ? "Already have an account?" : "Don't have an account?";
   $("auth-switch").textContent = signUp ? "Log in" : "Sign up";
   $("password").autocomplete = signUp ? "new-password" : "current-password";
+  show($("name-field"), signUp);
   message($("auth-message"), "");
 }
 
@@ -69,7 +70,12 @@ $("auth-form").addEventListener("submit", async (e) => {
   message($("auth-message"), "");
 
   if (signUpMode) {
-    const { data, error } = await db.auth.signUp({ email, password });
+    const displayName = $("signup-name").value.trim();
+    const { data, error } = await db.auth.signUp({
+      email,
+      password,
+      options: displayName ? { data: { display_name: displayName } } : undefined,
+    });
     if (error) message($("auth-message"), error.message);
     else if (!data.session) message($("auth-message"), "Account created! Check your email to confirm, then log in.", false);
   } else {
@@ -81,19 +87,56 @@ $("auth-form").addEventListener("submit", async (e) => {
 
 $("logout-btn").addEventListener("click", () => db.auth.signOut());
 
+// ---------- Display name ----------
+// Stored in the Supabase user's metadata; falls back to the part of the email before "@"
+function displayNameOf(user) {
+  return user.user_metadata?.display_name || user.email.split("@")[0];
+}
+
+function renderName(user) {
+  const name = displayNameOf(user);
+  $("user-name").textContent = name;
+  $("avatar").textContent = name[0];
+  const hour = new Date().getHours();
+  const timeOfDay = hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening";
+  $("greeting").textContent = `Good ${timeOfDay}, ${name} 👋`;
+}
+
+function showNameForm(visible) {
+  show($("name-form"), visible);
+  show($("profile-btn"), !visible);
+  show($("logout-btn"), !visible);
+  if (visible) {
+    $("name-input").value = $("user-name").textContent;
+    $("name-input").focus();
+    $("name-input").select();
+  }
+}
+
+$("profile-btn").addEventListener("click", () => showNameForm(true));
+$("name-cancel").addEventListener("click", () => showNameForm(false));
+
+$("name-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const name = $("name-input").value.trim();
+  if (!name) return;
+
+  const { data, error } = await db.auth.updateUser({ data: { display_name: name } });
+  if (error) return message($("app-message"), error.message);
+
+  renderName(data.user);
+  showNameForm(false);
+});
+
 function renderSession(session) {
   const loggedIn = !!session;
   show($("auth-view"), !loggedIn);
   show($("app-view"), loggedIn);
   show($("user-bar"), loggedIn);
+  showNameForm(false);
 
   if (loggedIn) {
-    const email = session.user.email;
-    $("user-email").textContent = email;
-    $("avatar").textContent = email[0];
-    const hour = new Date().getHours();
-    const timeOfDay = hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening";
-    $("greeting").textContent = `Good ${timeOfDay}, ${email.split("@")[0]} 👋`;
+    renderName(session.user);
     $("today-label").textContent = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
     loadData();
   } else {
