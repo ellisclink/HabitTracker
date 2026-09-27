@@ -19,8 +19,16 @@
       <span>Habitly</span>
     </div>
     <div id="user-bar" class="hidden">
-      <div class="avatar" id="avatar"></div>
-      <span id="user-email" class="user-email"></span>
+      <button id="profile-btn" class="profile-btn" title="Change display name">
+        <span class="avatar" id="avatar"></span>
+        <span id="user-name" class="user-name"></span>
+        <span class="edit-hint">✏️</span>
+      </button>
+      <form id="name-form" class="name-form hidden">
+        <input type="text" id="name-input" maxlength="30" placeholder="Display name" required />
+        <button type="submit" class="btn primary">Save</button>
+        <button type="button" id="name-cancel" class="btn ghost">Cancel</button>
+      </form>
       <button id="logout-btn" class="btn ghost">Log out</button>
     </div>
   </header>
@@ -46,6 +54,9 @@
         <h2 id="auth-title">Welcome back</h2>
         <p class="muted" id="auth-subtitle">Log in to see your habits.</p>
         <form id="auth-form">
+          <label id="name-field" class="hidden">Display name
+            <input type="text" id="signup-name" maxlength="30" placeholder="What should we call you?" autocomplete="nickname" />
+          </label>
           <label>Email
             <input type="email" id="email" required autocomplete="email" placeholder="you@example.com" />
           </label>
