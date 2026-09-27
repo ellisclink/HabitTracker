@@ -72,7 +72,26 @@ header {
   font-weight: 700;
   text-transform: uppercase;
 }
-.user-email { font-size: 0.9rem; color: var(--muted); }
+.profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 12px 4px 4px;
+  font: inherit;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.profile-btn:hover { background: rgba(124, 58, 237, 0.08); }
+.user-name { font-weight: 600; font-size: 0.95rem; color: var(--text); }
+.edit-hint { font-size: 0.8rem; opacity: 0; transition: opacity 0.15s; }
+.profile-btn:hover .edit-hint { opacity: 1; }
+
+.name-form { display: flex; gap: 6px; align-items: center; }
+.name-form input { margin: 0; padding: 8px 12px; width: 180px; }
+.name-form .btn { padding: 8px 14px; }
 
 main { max-width: 1000px; margin: 0 auto; padding: 8px 20px 60px; }
 
@@ -334,5 +353,5 @@ a:hover { text-decoration: underline; }
   .stat-label { font-size: 0.7rem; }
   .habit { flex-wrap: wrap; }
   .days { order: 3; width: 100%; justify-content: space-between; }
-  .user-email { display: none; }
+  .name-form input { width: 120px; }
 }
