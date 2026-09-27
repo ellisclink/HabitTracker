@@ -6,8 +6,8 @@ Built for **ED2 – Build Software with AI**, using AI tools (Claude Code) to wr
 
 ## 🔗 Links
 
-- **Live app:** https://YOUR-SITE-NAME.netlify.app
-- **Demo video:** https://youtu.be/YOUR_VIDEO_ID
+- **Live app:** ellishabittracker.netlify.app
+- **Demo video:** https://www.youtube.com/watch?v=6bhiePJpD0Q
 
 ## ✨ Features
 
